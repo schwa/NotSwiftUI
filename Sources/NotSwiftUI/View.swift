@@ -22,9 +22,12 @@ internal extension View {
             return
         }
 
-        Graph.current!.activeNodeStack.append(node)
+        guard let graph = Graph.current else {
+            fatalError("No graph is currently active.")
+        }
+        graph.activeNodeStack.append(node)
         defer {
-            _ = Graph.current!.activeNodeStack.removeLast()
+            _ = graph.activeNodeStack.removeLast()
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)

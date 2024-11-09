@@ -16,9 +16,15 @@ internal class Graph {
 
     @MainActor
     func rebuildIfNeeded() {
+        let saved = Self.current
         Self.current = self
-        root.view!._buildNodeTree(root)
-        Self.current = nil
+        defer {
+            Self.current = saved
+        }
+        guard let rootView = root.view else {
+            fatalError("Root view is missing.")
+        }
+        rootView._buildNodeTree(root)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)
