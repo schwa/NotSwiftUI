@@ -9,14 +9,15 @@ internal protocol AnyObservedObject {
 
 @propertyWrapper
 public struct ObservedObject<ObjectType: ObservableObject> {
-    private var box: ObservedObjectBox<ObjectType>
+    @ObservedObjectBox
+    private var object: ObjectType
 
     public init(wrappedValue: ObjectType) {
-        box = ObservedObjectBox(wrappedValue)
+        _object = ObservedObjectBox(wrappedValue)
     }
 
     public var wrappedValue: ObjectType {
-        box.object
+        object
     }
 
     public var projectedValue: ProjectedValue<ObjectType> {
@@ -32,26 +33,27 @@ extension ObservedObject: Equatable {
 
 extension ObservedObject: AnyObservedObject {
     func addDependency(_ node: Node) {
-        box.addDependency(node)
+        _object.addDependency(node)
     }
 }
 
 // MARK: -
 
-fileprivate final class ObservedObjectBox<ObjectType: ObservableObject> {
-    fileprivate let object: ObjectType
+@propertyWrapper
+fileprivate final class ObservedObjectBox<Wrapped: ObservableObject> {
+    fileprivate let wrappedValue: Wrapped
     private var cancellable: AnyCancellable?
     private weak var node: Node?
 
-    init(_ object: ObjectType) {
-        self.object = object
+    init(_ wrappedValue: Wrapped) {
+        self.wrappedValue = wrappedValue
     }
 
     @MainActor
     func addDependency(_ node: Node) {
         if node === self.node { return }
         self.node = node
-        cancellable = object.objectWillChange.sink { _ in
+        cancellable = wrappedValue.objectWillChange.sink { _ in
             node.setNeedsRebuild()
         }
     }
