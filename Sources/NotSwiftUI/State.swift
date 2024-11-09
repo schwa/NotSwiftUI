@@ -1,31 +1,34 @@
 internal protocol StateProperty {
-    var value: Any { get nonmutating set }
+    var erasedValue: Any { get nonmutating set }
 }
 
 @propertyWrapper
-public struct State<Value>: StateProperty {
-    private var box: Box<StateBox<Value>>
+public struct State<Value> {
+    @Box
+    private var state: StateBox<Value>
 
     public init(wrappedValue: Value) {
-        box = Box(StateBox(wrappedValue))
+        _state = Box(StateBox(wrappedValue))
     }
 
     public var wrappedValue: Value {
-        get { box.value.value }
-        nonmutating set { box.value.value = newValue }
+        get { state.wrappedValue }
+        nonmutating set { state.wrappedValue = newValue }
     }
 
     public var projectedValue: Binding<Value> {
-        box.value.binding
+        state.binding
     }
+}
 
-    var value: Any {
-        get { box.value }
+extension State: StateProperty {
+    var erasedValue: Any {
+        get { state }
         nonmutating set {
-            guard let newBox = newValue as? StateBox<Value> else {
+            guard let newValue = newValue as? StateBox<Value> else {
                 fatalError("Expected StateBox<Value> in State.value set")
             }
-            box.value = newBox
+            state = newValue
         }
     }
 }

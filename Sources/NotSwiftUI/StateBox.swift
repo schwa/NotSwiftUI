@@ -1,30 +1,33 @@
-internal final class StateBox<Value> {
+internal final class StateBox<Wrapped> {
     private weak var graph: Graph?
-    private var _value: Value
-    private var dependencies: [Weak<Node>] = []
-    var binding: Binding<Value> = Binding(
+    private var _value: Wrapped
+    private var dependencies: [WeakBox<Node>] = []
+    var binding: Binding<Wrapped> = Binding(
         get: { fatalError("Empty Binding: get() called.") },
         set: { _ in fatalError("Empty Binding: set() called.") }
     )
 
-    init(_ value: Value) {
-        self._value = value
+    init(_ wrappedValue: Wrapped) {
+        self._value = wrappedValue
         self.binding = Binding(get: { [unowned self] in
-            self.value
+            self.wrappedValue
         }, set: { [unowned self] in
-            self.value = $0
+            self.wrappedValue = $0
         })
     }
 
-    var value: Value {
+    var wrappedValue: Wrapped {
         get {
             if graph == nil {
                 graph = Graph.current
             }
             // Remove lazy values whose nodes have been deallocated
-            dependencies = dependencies.filter { $0.value != nil }
-            if let node = graph!.activeNodeStack.last, dependencies.contains(where: { $0.value === node }) == false {
-                dependencies.append(Weak(node))
+            dependencies = dependencies.filter { $0.wrappedValue != nil }
+            guard let graph else {
+                fatalError("StateBox used outside of Graph")
+            }
+            if let node = graph.activeNodeStack.last, dependencies.contains(where: { $0.wrappedValue === node }) == false {
+                dependencies.append(WeakBox(node))
             }
             return _value
         }
@@ -33,7 +36,7 @@ internal final class StateBox<Value> {
                 graph = Graph.current
             }
             _value = newValue
-            dependencies.compactMap { $0.value }.forEach { $0.setNeedsRebuild() }
+            dependencies.compactMap { $0() }.forEach { $0.setNeedsRebuild() }
         }
     }
 }

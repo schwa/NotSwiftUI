@@ -81,7 +81,7 @@ internal extension View {
                 fatalError("No label for state property.")
             }
             guard let propValue = node.stateProperties[label] else { continue }
-            prop.value = propValue
+            prop.erasedValue = propValue
         }
     }
 
@@ -92,7 +92,7 @@ internal extension View {
             guard let label else {
                 fatalError("No label for state property.")
             }
-            node.stateProperties[label] = prop.value
+            node.stateProperties[label] = prop.erasedValue
         }
     }
 }
