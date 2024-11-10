@@ -38,3 +38,10 @@ internal class Graph {
         }
     }
 }
+
+extension Graph {
+    @MainActor
+    func dump() {
+        root.dump()
+    }
+}

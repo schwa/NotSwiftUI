@@ -26,9 +26,20 @@ internal final class Node {
 }
 
 internal extension Node {
+    @MainActor
     func dump(depth: Int = 0) {
         let indent = String(repeating: "  ", count: depth)
-        print("\(indent)\(String(describing: view))")
+
+        if let view = view as? AnyBuiltinView {
+            print("\(indent)\(String(describing: view.kind))")
+        }
+        else if let view {
+            print("\(indent)\(String(describing: view))")
+        }
+        else {
+            print("\(indent)<nil>")
+        }
+
         for child in children {
             child.dump(depth: depth + 1)
         }
