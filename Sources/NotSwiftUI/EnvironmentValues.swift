@@ -63,16 +63,16 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
 //    public mutating func update()
 // }
 
-@propertyWrapper
-public struct Environment <Value> {
-    public var wrappedValue: Value {
-        get {
-            // TODO: Looks like we'll need to follow some of the same patterns as State/StateBox here.
-            fatalError()
-        }
-    }
-
-    public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
-        fatalError()
-    }
-}
+// @propertyWrapper
+// public struct Environment <Value> {
+//    public var wrappedValue: Value {
+//        get {
+//            // TODO: Looks like we'll need to follow some of the same patterns as State/StateBox here.
+//            fatalError()
+//        }
+//    }
+//
+//    public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
+//        fatalError()
+//    }
+// }
