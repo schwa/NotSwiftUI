@@ -13,8 +13,44 @@ let testMacros: [String: Macro.Type] = [
 ]
 #endif
 
-final class NotSwiftUITests: XCTestCase {
-    func testMacro() throws {
+final class EntryMacroTests: XCTestCase {
+    func testBasicType() throws {
+        #if canImport(NotSwiftUIMacros)
+        assertMacroExpansion(
+            """
+            extension EnvironmentValues {
+                @Entry
+                var name: Int = 42
+            }
+            """,
+            expandedSource:
+                """
+            extension EnvironmentValues {
+                var name: Int {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+
+                private struct __Key_name: EnvironmentKey {
+                    typealias Value = Int
+                    static var defaultValue: Value {
+                        42
+                    }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    func testOptionalType() throws {
         #if canImport(NotSwiftUIMacros)
         assertMacroExpansion(
             """
@@ -23,10 +59,10 @@ final class NotSwiftUITests: XCTestCase {
                 var name: String?
             }
             """,
-            expandedSource: """
+            expandedSource:
+                """
             extension EnvironmentValues {
-                var name: String?
-                    {
+                var name: String? {
                     get {
                         self[__Key_name.self]
                     }
@@ -34,9 +70,12 @@ final class NotSwiftUITests: XCTestCase {
                         self[__Key_name.self] = newValue
                     }
                 }
-                private struct -_Key_name: SwiftUICore.EnvironmentKey {
+
+                private struct __Key_name: EnvironmentKey {
                     typealias Value = String?
-                    static var defaultValue: Value { nil }
+                    static var defaultValue: Value {
+                        nil
+                    }
                 }
             }
             """,

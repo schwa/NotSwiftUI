@@ -20,6 +20,7 @@ Here's what's changed from the original:
 
 - [X] Add support for environment.
 - [X] Eliminate the global state if at all possible.
+- [X] `@Entry` macro.
 - [ ] Replace Swift @propertyWrapper with Macros where sensible.
 - [ ] Add in support for Observation (get rid of ObservedObject))
 

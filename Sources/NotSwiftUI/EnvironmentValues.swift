@@ -63,8 +63,8 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
 //    public mutating func update()
 // }
 
- @propertyWrapper
- public struct Environment <Value> {
+@propertyWrapper
+public struct Environment <Value> {
     public var wrappedValue: Value {
         get {
             guard let graph = Graph.current else {
@@ -82,4 +82,4 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
     public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
         self.keyPath = keyPath
     }
- }
+}

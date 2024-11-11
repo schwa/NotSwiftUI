@@ -419,7 +419,7 @@ struct NotSwiftUIStateTests {
         struct Example1: View {
             var body: some View {
                 Example2()
-                .environment(\.exampleValue, "Hello world")
+                    .environment(\.exampleValue, "Hello world")
             }
         }
 
@@ -444,19 +444,9 @@ struct NotSwiftUIStateTests {
     }
 }
 
-struct ExampleKey: EnvironmentKey {
-    static let defaultValue = ""
-}
-
 extension EnvironmentValues {
-    var exampleValue: String {
-        get {
-            self[ExampleKey.self]
-        }
-        set {
-            self[ExampleKey.self] = newValue
-        }
-    }
+    @Entry
+    var exampleValue: String = ""
 }
 
 extension Graph {
