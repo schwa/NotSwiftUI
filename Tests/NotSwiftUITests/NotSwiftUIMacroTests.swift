@@ -9,7 +9,7 @@ import XCTest
 import NotSwiftUIMacros
 
 let testMacros: [String: Macro.Type] = [
-    "stringify": StringifyMacro.self
+    "Entry": EntryMacro.self
 ]
 #endif
 
@@ -18,27 +18,28 @@ final class NotSwiftUITests: XCTestCase {
         #if canImport(NotSwiftUIMacros)
         assertMacroExpansion(
             """
-            #stringify(a + b)
+            extension EnvironmentValues {
+                @Entry
+                var name: String?
+            }
             """,
             expandedSource: """
-            (a + b, "a + b")
+            extension EnvironmentValues {
+                var name: String?
+                    {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+                private struct -_Key_name: SwiftUICore.EnvironmentKey {
+                    typealias Value = String?
+                    static var defaultValue: Value { nil }
+                }
+            }
             """,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-
-    func testMacroWithStringLiteral() throws {
-        #if canImport(NotSwiftUIMacros)
-        assertMacroExpansion(
-            #"""
-            #stringify("Hello, \(name)")
-            """#,
-            expandedSource: #"""
-            ("Hello, \(name)", #""Hello, \(name)""#)
-            """#,
             macros: testMacros
         )
         #else

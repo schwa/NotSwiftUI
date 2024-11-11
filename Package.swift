@@ -38,7 +38,10 @@ let package = Package(
         ),
         .testTarget(
             name: "NotSwiftUITests",
-            dependencies: ["NotSwiftUI"]
+            dependencies: [
+                "NotSwiftUI",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+            ]
         )
     ]
 )
