@@ -13,9 +13,10 @@ internal final class StateBox<Wrapped> {
 
     var wrappedValue: Wrapped {
         get {
-            // Remove lazy values whose nodes have been deallocated
+            // Remove dependnecies whose values have been deallocated
             dependencies = dependencies.filter { $0.wrappedValue != nil }
 
+            // Add current node accessoring the value to list of dependencies
             let currentNode = graph?.activeNodeStack.last
             if let currentNode, !dependencies.contains(where: { $0() === currentNode }) {
                 dependencies.append(WeakBox(currentNode))

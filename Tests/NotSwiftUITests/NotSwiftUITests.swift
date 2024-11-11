@@ -398,19 +398,6 @@ struct NotSwiftUIStateTests {
     @Test func testEnvironment1() {
         struct Example1: View {
             var body: some View {
-                EmptyView()
-                    .environment(\.exampleValue, "Hello world")
-            }
-        }
-
-        let s = Example1()
-        let graph = Graph(content: s)
-        // TODO
-    }
-
-    @Test func testEnvironment2() {
-        struct Example1: View {
-            var body: some View {
                 EnvironmentReader(keyPath: \.exampleValue) { Example2(value: $0) }
                     .environment(\.exampleValue, "Hello world")
             }
@@ -426,6 +413,34 @@ struct NotSwiftUIStateTests {
         let s = Example1()
         let graph = Graph(content: s)
         #expect(graph.view(at: [0], type: Example2.self).value == "Hello world")
+    }
+
+    @Test func testEnvironment2() {
+        struct Example1: View {
+            var body: some View {
+                Example2()
+                .environment(\.exampleValue, "Hello world")
+            }
+        }
+
+        struct Example2: View {
+            @Environment(\.exampleValue)
+            var value
+            var body: some View {
+                Example3(value: value)
+            }
+        }
+
+        struct Example3: View, BuiltinView {
+            typealias Body = Never
+            var value: String
+            func _buildNodeTree(_ node: Node) {
+            }
+        }
+
+        let s = Example1()
+        let graph = Graph(content: s)
+        #expect(graph.view(at: [0, 0], type: Example3.self).value == "Hello world")
     }
 }
 

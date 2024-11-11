@@ -63,16 +63,23 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
 //    public mutating func update()
 // }
 
-// @propertyWrapper
-// public struct Environment <Value> {
-//    public var wrappedValue: Value {
-//        get {
-//            // TODO: Looks like we'll need to follow some of the same patterns as State/StateBox here.
-//            fatalError()
-//        }
-//    }
-//
-//    public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
-//        fatalError()
-//    }
-// }
+ @propertyWrapper
+ public struct Environment <Value> {
+    public var wrappedValue: Value {
+        get {
+            guard let graph = Graph.current else {
+                fatalError("Environment must be used within a Graph.")
+            }
+            guard let currentNode = graph.activeNodeStack.last else {
+                fatalError("Environment must be used within a Node.")
+            }
+            return currentNode.environmentValues[keyPath: keyPath]
+        }
+    }
+
+    var keyPath: KeyPath<EnvironmentValues, Value>
+
+    public init(_ keyPath: KeyPath<EnvironmentValues, Value>) {
+        self.keyPath = keyPath
+    }
+ }
