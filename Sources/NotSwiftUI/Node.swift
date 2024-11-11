@@ -31,7 +31,7 @@ internal extension Node {
         let indent = String(repeating: "  ", count: depth)
 
         if let view = view as? AnyBuiltinView {
-            print("\(indent)\(String(describing: view.kind))")
+            print("\(indent)\(String(describing: view.viewType))")
         }
         else if let view {
             print("\(indent)\(String(describing: view))")
