@@ -15,21 +15,21 @@ public extension View where Body == Never {
 }
 
 internal extension View {
-    func buildNodeTree(_ node: Node) {
-        if let builtInView = self as? BuiltinView {
-            node.view = self
-            builtInView._buildNodeTree(node)
-            return
-        }
-
-        node.view = self
-
+    func expandNode(_ node: Node) {
+        // TODO: Refactor this to make expandion of the node tree distinct from handling observable and state properties.
         guard let graph = Graph.current else {
             fatalError("No graph is currently active.")
         }
         graph.activeNodeStack.append(node)
         defer {
             _ = graph.activeNodeStack.removeLast()
+        }
+
+        node.view = self
+
+        if let builtInView = self as? BodylessView {
+            builtInView._expandNode(node)
+            return
         }
 
         let shouldRunBody = node.needsRebuild || !equalToPrevious(node)
@@ -40,15 +40,13 @@ internal extension View {
             return
         }
 
-//        node.view = AnyBuiltinView(self)
-
         observeObjects(node)
         restoreStateProperties(node)
 
         if node.children.isEmpty {
             node.children = [graph.makeNode()]
         }
-        body.buildNodeTree(node.children[0])
+        body.expandNode(node.children[0])
 
         storeStateProperties(node)
         node.previousView = self

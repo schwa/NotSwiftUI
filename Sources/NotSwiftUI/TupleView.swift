@@ -8,8 +8,8 @@ public struct TupleView <each T: View>: View {
     }
 }
 
-extension TupleView: BuiltinView {
-    func _buildNodeTree(_ node: Node) {
+extension TupleView: BodylessView {
+    func _expandNode(_ node: Node) {
         guard let graph = node.graph else {
             fatalError("Cannot build node tree without a graph.")
         }
@@ -18,7 +18,7 @@ extension TupleView: BuiltinView {
             if node.children.count <= index {
                 node.children.append(graph.makeNode())
             }
-            child.buildNodeTree(node.children[index])
+            child.expandNode(node.children[index])
             index += 1
         }
     }

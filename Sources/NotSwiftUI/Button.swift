@@ -1,4 +1,4 @@
-public struct Button: View, BuiltinView {
+public struct Button: View, BodylessView {
     public typealias Body = Never
 
     public private(set) var title: String
@@ -9,7 +9,7 @@ public struct Button: View, BuiltinView {
         self.action = action
     }
 
-    func _buildNodeTree(_ node: Node) {
+    func _expandNode(_ node: Node) {
         // todo create a UIButton
     }
 }

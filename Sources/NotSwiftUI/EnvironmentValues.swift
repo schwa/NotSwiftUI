@@ -21,13 +21,13 @@ public extension EnvironmentValues {
     }
 }
 
-struct EnvironmentWritingModifier<Content: View>: View, BuiltinView {
+struct EnvironmentWritingModifier<Content: View>: View, BodylessView {
     var content: Content
     var modify: (inout EnvironmentValues) -> ()
 
-    func _buildNodeTree(_ node: Node) {
+    func _expandNode(_ node: Node) {
         modify(&node.environmentValues)
-        content.buildNodeTree(node)
+        content.expandNode(node)
     }
 }
 
@@ -39,7 +39,7 @@ public extension View {
     }
 }
 
-public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
+public struct EnvironmentReader<Value, Content: View>: View, BodylessView {
     var keyPath: KeyPath<EnvironmentValues, Value>
     var content: (Value) -> Content
 
@@ -48,9 +48,9 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
         self.content = content
     }
 
-    func _buildNodeTree(_ node: Node) {
+    func _expandNode(_ node: Node) {
         let value = node.environmentValues[keyPath: keyPath]
-        content(value).buildNodeTree(node)
+        content(value).expandNode(node)
     }
 }
 

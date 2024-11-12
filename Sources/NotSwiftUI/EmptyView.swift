@@ -6,8 +6,8 @@ public struct EmptyView: View {
     }
 }
 
-extension EmptyView: BuiltinView {
-    func _buildNodeTree(_ node: Node) {
+extension EmptyView: BodylessView {
+    func _expandNode(_ node: Node) {
         // This line intentionally left blank.
     }
 }

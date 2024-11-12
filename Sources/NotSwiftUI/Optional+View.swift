@@ -1,7 +1,7 @@
-extension Optional: View, BuiltinView where Wrapped: View {
+extension Optional: View, BodylessView where Wrapped: View {
     public typealias Body = Never
 
-    func _buildNodeTree(_ node: Node) {
-        self?.buildNodeTree(node)
+    func _expandNode(_ node: Node) {
+        self?.expandNode(node)
     }
 }

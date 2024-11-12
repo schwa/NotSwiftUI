@@ -400,10 +400,10 @@ struct NotSwiftUIStateTests {
             }
         }
 
-        struct Example2: View, BuiltinView {
+        struct Example2: View, BodylessView {
             typealias Body = Never
             var value: String
-            func _buildNodeTree(_ node: Node) {
+            func _expandNode(_ node: Node) {
             }
         }
 
@@ -429,10 +429,10 @@ struct NotSwiftUIStateTests {
             }
         }
 
-        struct Example3: View, BuiltinView {
+        struct Example3: View, BodylessView {
             typealias Body = Never
             var value: String
-            func _buildNodeTree(_ node: Node) {
+            func _expandNode(_ node: Node) {
             }
         }
 
@@ -451,7 +451,6 @@ struct NotSwiftUIStateTests {
             }
         }
         let graph = Graph(content: stack)
-        graph.dump()
         #expect(graph.view(at: [0], type: Button.self) == nil)
     }
 

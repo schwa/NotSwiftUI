@@ -10,7 +10,7 @@ public class Graph {
         root = Node()
         root.graph = self
         Self.current = self
-        content.buildNodeTree(root)
+        content.expandNode(root)
         Self.current = nil
     }
 
@@ -24,7 +24,7 @@ public class Graph {
         guard let rootView = root.view else {
             fatalError("Root view is missing.")
         }
-        rootView.buildNodeTree(root)
+        rootView.expandNode(root)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)

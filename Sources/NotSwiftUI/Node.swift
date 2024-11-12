@@ -17,7 +17,7 @@ internal final class Node {
 
     @MainActor
     func rebuildIfNeeded() {
-        view?.buildNodeTree(self)
+        view?.expandNode(self)
     }
 
     func setNeedsRebuild() {
