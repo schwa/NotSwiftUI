@@ -2,7 +2,7 @@ internal final class Node {
     weak var graph: Graph?
     var children: [Node] = []
     var needsRebuild = true
-    var view: BuiltinView?
+    var view: (any View)?
     var previousView: Any?
     var stateProperties: [String: Any] = [:]
     var environmentValues = EnvironmentValues()
@@ -17,7 +17,7 @@ internal final class Node {
 
     @MainActor
     func rebuildIfNeeded() {
-        view?._buildNodeTree(self)
+        view?.buildNodeTree(self)
     }
 
     func setNeedsRebuild() {
@@ -39,7 +39,7 @@ internal extension Node {
             print("\(indent)\(String(describing: view))")
         }
         else {
-            print("\(indent)<nil>")
+            print("\(indent)<no view!>")
         }
 
         for child in children {

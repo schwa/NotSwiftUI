@@ -1,12 +1,12 @@
 internal import os
 
-internal class Graph {
+public class Graph {
     var activeNodeStack: [Node] = []
 
     private(set) var root: Node
 
     @MainActor
-    init<Content>(content: Content) where Content: View {
+    public init<Content>(content: Content) where Content: View {
         root = Node()
         root.graph = self
         Self.current = self
@@ -24,7 +24,7 @@ internal class Graph {
         guard let rootView = root.view else {
             fatalError("Root view is missing.")
         }
-        rootView._buildNodeTree(root)
+        rootView.buildNodeTree(root)
     }
 
     static let _current = OSAllocatedUnfairLock<Graph?>(uncheckedState: nil)
@@ -43,7 +43,7 @@ internal class Graph {
     }
 }
 
-extension Graph {
+public extension Graph {
     @MainActor
     func dump() {
         root.dump()

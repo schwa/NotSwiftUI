@@ -17,10 +17,12 @@ public extension View where Body == Never {
 internal extension View {
     func buildNodeTree(_ node: Node) {
         if let builtInView = self as? BuiltinView {
-            node.view = builtInView
+            node.view = self
             builtInView._buildNodeTree(node)
             return
         }
+
+        node.view = self
 
         guard let graph = Graph.current else {
             fatalError("No graph is currently active.")
@@ -38,7 +40,7 @@ internal extension View {
             return
         }
 
-        node.view = AnyBuiltinView(self)
+//        node.view = AnyBuiltinView(self)
 
         observeObjects(node)
         restoreStateProperties(node)

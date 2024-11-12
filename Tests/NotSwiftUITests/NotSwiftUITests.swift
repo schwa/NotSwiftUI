@@ -2,22 +2,6 @@ import Combine
 @testable import NotSwiftUI
 import Testing
 
-struct Button: View, BuiltinView {
-    typealias Body = Never
-
-    var title: String
-    var action: () -> ()
-
-    init(_ title: String, action: @escaping () -> ()) {
-        self.title = title
-        self.action = action
-    }
-
-    func _buildNodeTree(_ node: Node) {
-        // todo create a UIButton
-    }
-}
-
 final class Model: ObservableObject {
     @Published var counter: Int = 0
 }
@@ -60,7 +44,8 @@ struct NotSwiftUIStateTests {
         sampleBodyCount = 0
     }
 
-    @Test func testUpdate() {
+    // Test that a button can self update its title
+    @Test func simpleUpdate() {
         let v = ContentView()
 
         let graph = Graph(content: v)
@@ -98,6 +83,7 @@ struct NotSwiftUIStateTests {
 
         let v = ContentView()
         let graph = Graph(content: v)
+        graph.dump()
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
@@ -450,7 +436,7 @@ extension EnvironmentValues {
 }
 
 extension Graph {
-    func view(at path: [Int]) -> (any BuiltinView)? {
+    func view(at path: [Int]) -> (any View)? {
         var node: Node = root
         for index in path {
             node = node.children[index]
