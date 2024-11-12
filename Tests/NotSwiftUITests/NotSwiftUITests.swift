@@ -45,7 +45,8 @@ struct NotSwiftUIStateTests {
     }
 
     // Test that a button can self update its title
-    @Test func simpleUpdate() {
+    @Test
+    func simpleUpdate() {
         let v = ContentView()
 
         let graph = Graph(content: v)
@@ -60,7 +61,8 @@ struct NotSwiftUIStateTests {
 
     // MARK: ObservedObject tests
 
-    @Test func testConstantNested() {
+    @Test
+    func constantNested() {
         @MainActor struct Nested: View {
             var body: some View {
                 nestedBodyCount += 1
@@ -95,7 +97,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 1)
     }
 
-    @Test func testChangedNested() {
+    @Test
+    func changedNested() {
         struct Nested: View {
             var counter: Int
             var body: some View {
@@ -130,7 +133,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 2)
     }
 
-    @Test func testUnchangedNested() {
+    @Test
+    func unchangedNested() {
         struct Nested: View {
             var isLarge: Bool = false
             var body: some View {
@@ -165,7 +169,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 1)
     }
 
-    @Test func testUnchangedNestedWithObservedObject() {
+    @Test
+    func unchangedNestedWithObservedObject() {
         struct Nested: View {
             @ObservedObject var model = nestedModel
             var body: some View {
@@ -200,7 +205,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 1)
     }
 
-    @Test func testBinding1() {
+    @Test
+    func binding1() {
         struct Nested: View {
             @Binding var counter: Int
             var body: some View {
@@ -235,7 +241,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 2)
     }
 
-    @Test func testBinding2() {
+    @Test
+    func binding2() {
         struct Nested: View {
             @Binding var counter: Int
             var body: some View {
@@ -271,7 +278,8 @@ struct NotSwiftUIStateTests {
 
     // MARK: State tests
 
-    @Test func testSimple() {
+    @Test
+    func simpleState() {
         struct Nested: View {
             @State private var counter = 0
             var body: some View {
@@ -315,7 +323,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedButton.title == "1")
     }
 
-    @Test func testBindings() {
+    @Test
+    func statePlusBindings() {
         struct Nested: View {
             @Binding var counter: Int
             var body: some View {
@@ -344,7 +353,8 @@ struct NotSwiftUIStateTests {
         #expect(nestedButton.title == "1")
     }
 
-    @Test func testUnusedBinding() {
+    @Test
+    func unusedBinding() {
         struct Nested: View {
             @Binding var counter: Int
             var body: some View {
@@ -379,10 +389,10 @@ struct NotSwiftUIStateTests {
         #expect(nestedBodyCount == 1)
     }
 
-    // Environment Tests
+    // MARK: Environment Tests
 
     @Test
-    func testEnvironment1() {
+    func environment1() {
         struct Example1: View {
             var body: some View {
                 EnvironmentReader(keyPath: \.exampleValue) { Example2(value: $0) }
@@ -402,7 +412,8 @@ struct NotSwiftUIStateTests {
         #expect(graph.view(at: [0], type: Example2.self).value == "Hello world")
     }
 
-    func testEnvironment2() {
+    @Test
+    func environment2() {
         struct Example1: View {
             var body: some View {
                 Example2()
