@@ -51,7 +51,7 @@ struct NotSwiftUIStateTests {
 
         let graph = Graph(content: v)
         var button: Button {
-            graph.view(at: [0], type: Button.self)
+            try! #require(graph.view(at: [0], type: Button.self))
         }
         #expect(button.title == "0")
         button.action()
@@ -89,7 +89,7 @@ struct NotSwiftUIStateTests {
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
@@ -125,7 +125,7 @@ struct NotSwiftUIStateTests {
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
@@ -161,7 +161,7 @@ struct NotSwiftUIStateTests {
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
@@ -197,7 +197,7 @@ struct NotSwiftUIStateTests {
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
@@ -233,7 +233,7 @@ struct NotSwiftUIStateTests {
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         button.action()
         graph.rebuildIfNeeded()
@@ -264,7 +264,7 @@ struct NotSwiftUIStateTests {
         let v = ContentView()
         let graph = Graph(content: v)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         #expect(contentViewBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -302,10 +302,10 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = Graph(content: s)
         var button: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         var nestedButton: Button {
-            graph.view(at: [0, 1, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 1, 0], type: Button.self))
         }
         #expect(button.title == "0")
         #expect(nestedButton.title == "0")
@@ -344,7 +344,7 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = Graph(content: s)
         var nestedButton: Button {
-            graph.view(at: [0, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 0], type: Button.self))
         }
         #expect(nestedButton.title == "0")
 
@@ -377,7 +377,7 @@ struct NotSwiftUIStateTests {
         let s = Sample()
         let graph = Graph(content: s)
         var nestedButton: Button {
-            graph.view(at: [0, 1, 0], type: Button.self)
+            try! #require(graph.view(at: [0, 1, 0], type: Button.self))
         }
         #expect(sampleBodyCount == 1)
         #expect(nestedBodyCount == 1)
@@ -392,7 +392,7 @@ struct NotSwiftUIStateTests {
     // MARK: Environment Tests
 
     @Test
-    func environment1() {
+    func environment1() throws {
         struct Example1: View {
             var body: some View {
                 EnvironmentReader(keyPath: \.exampleValue) { Example2(value: $0) }
@@ -409,11 +409,11 @@ struct NotSwiftUIStateTests {
 
         let s = Example1()
         let graph = Graph(content: s)
-        #expect(graph.view(at: [0], type: Example2.self).value == "Hello world")
+        try #expect(#require(graph.view(at: [0], type: Example2.self)).value == "Hello world")
     }
 
     @Test
-    func environment2() {
+    func environment2() throws {
         struct Example1: View {
             var body: some View {
                 Example2()
@@ -438,12 +438,12 @@ struct NotSwiftUIStateTests {
 
         let s = Example1()
         let graph = Graph(content: s)
-        #expect(graph.view(at: [0, 0], type: Example3.self).value == "Hello world")
+        try #expect(#require(graph.view(at: [0, 0], type: Example3.self)).value == "Hello world")
     }
 
     // MARK: Optional tests
 
-    @Test func optionalNil() async throws {
+    @Test func optionalNil() {
         let flag = false
         let stack = Stack {
             if flag {
@@ -452,11 +452,10 @@ struct NotSwiftUIStateTests {
         }
         let graph = Graph(content: stack)
         graph.dump()
-//        #expect(graph.view(at: [0], type: Example3.self).value == "Hello world")
-        // TODO: Unimplemented.
+        #expect(graph.view(at: [0], type: Button.self) == nil)
     }
 
-    @Test func optionalSome() async throws {
+    @Test func optionalSome() {
         let flag = true
         let stack = Stack {
             if flag {
@@ -464,7 +463,7 @@ struct NotSwiftUIStateTests {
             }
         }
         let graph = Graph(content: stack)
-        #expect(graph.view(at: [0], type: Button.self).title == "Button")
+        #expect(try! #require(graph.view(at: [0], type: Button.self)).title == "Button")
     }
 }
 
@@ -484,12 +483,12 @@ extension Graph {
         return node.view
     }
 
-    func view<V>(at path: [Int], type: V.Type) -> V {
+    func view<V>(at path: [Int], type: V.Type) -> V? {
         var node: Node = root
         for index in path {
             node = node.children[index]
         }
-        return node.view as! V
+        return node.view as? V
     }
 }
 
