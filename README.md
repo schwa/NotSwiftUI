@@ -23,6 +23,7 @@ Here's what's changed from the original:
 - [X] `@Entry` macro.
 - [ ] Replace Swift @propertyWrapper with Macros where sensible.
 - [ ] Add in support for Observation (get rid of ObservedObject))
+- [ ] Allow `Node.view` to be an `(any View)` instead of `BuiltInView`.
 
 ## Objc.io's SwiftUI State Explained Series
 
