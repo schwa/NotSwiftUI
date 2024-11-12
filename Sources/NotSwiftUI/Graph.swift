@@ -37,6 +37,10 @@ internal class Graph {
             _current.withLockUnchecked { $0 = newValue }
         }
     }
+
+    func makeNode() -> Node {
+        Node(graph: self)
+    }
 }
 
 extension Graph {

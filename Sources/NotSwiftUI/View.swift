@@ -44,7 +44,7 @@ internal extension View {
         restoreStateProperties(node)
 
         if node.children.isEmpty {
-            node.children = [Node(graph: node.graph)]
+            node.children = [graph.makeNode()]
         }
         body.buildNodeTree(node.children[0])
 

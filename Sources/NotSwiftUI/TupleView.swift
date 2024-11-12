@@ -10,14 +10,17 @@ public struct TupleView <each T: View>: View {
 
 extension TupleView: BuiltinView {
     func _buildNodeTree(_ node: Node) {
-        var idx = 0
+        guard let graph = node.graph else {
+            fatalError("Cannot build node tree without a graph.")
+        }
+        var index = 0
         for child in repeat (each children) {
             let child = AnyBuiltinView(child)
-            if node.children.count <= idx {
-                node.children.append(Node(graph: node.graph))
+            if node.children.count <= index {
+                node.children.append(graph.makeNode())
             }
-            child._buildNodeTree(node.children[idx])
-            idx += 1
+            child._buildNodeTree(node.children[index])
+            index += 1
         }
     }
 }

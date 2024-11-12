@@ -25,6 +25,8 @@ internal final class Node {
     }
 }
 
+// MARK: -
+
 internal extension Node {
     @MainActor
     func dump(depth: Int = 0) {
