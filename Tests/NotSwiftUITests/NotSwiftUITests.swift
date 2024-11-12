@@ -440,7 +440,35 @@ struct NotSwiftUIStateTests {
         let graph = Graph(content: s)
         #expect(graph.view(at: [0, 0], type: Example3.self).value == "Hello world")
     }
+
+    // MARK: Optional tests
+
+    @Test func optionalNil() async throws {
+        let flag = false
+        let stack = Stack {
+            if flag {
+                Button("Button") {}
+            }
+        }
+        let graph = Graph(content: stack)
+        graph.dump()
+//        #expect(graph.view(at: [0], type: Example3.self).value == "Hello world")
+        // TODO: Unimplemented.
+    }
+
+    @Test func optionalSome() async throws {
+        let flag = true
+        let stack = Stack {
+            if flag {
+                Button("Button") {}
+            }
+        }
+        let graph = Graph(content: stack)
+        #expect(graph.view(at: [0], type: Button.self).title == "Button")
+    }
 }
+
+// MARK: -
 
 extension EnvironmentValues {
     @Entry
@@ -462,5 +490,17 @@ extension Graph {
             node = node.children[index]
         }
         return node.view as! V
+    }
+}
+
+struct Stack <Content>: View where Content: View {
+    var content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
     }
 }
