@@ -3,7 +3,7 @@ internal final class Node {
     var children: [Node] = []
     var needsRebuild = true
     var view: (any View)?
-    var previousView: Any?
+    var previousView: (any View)?
     var stateProperties: [String: Any] = [:]
     var environmentValues = EnvironmentValues()
 
@@ -32,10 +32,7 @@ internal extension Node {
     func dump(depth: Int = 0) {
         let indent = String(repeating: "  ", count: depth)
 
-        if let view = view as? AnyBuiltinView {
-            print("\(indent)\(String(describing: view.viewType))")
-        }
-        else if let view {
+        if let view {
             print("\(indent)\(String(describing: view))")
         }
         else {

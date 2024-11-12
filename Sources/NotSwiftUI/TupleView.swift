@@ -15,11 +15,10 @@ extension TupleView: BuiltinView {
         }
         var index = 0
         for child in repeat (each children) {
-            let child = AnyBuiltinView(child)
             if node.children.count <= index {
                 node.children.append(graph.makeNode())
             }
-            child._buildNodeTree(node.children[index])
+            child.buildNodeTree(node.children[index])
             index += 1
         }
     }

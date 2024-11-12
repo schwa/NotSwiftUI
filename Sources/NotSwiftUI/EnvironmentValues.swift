@@ -27,7 +27,7 @@ struct EnvironmentWritingModifier<Content: View>: View, BuiltinView {
 
     func _buildNodeTree(_ node: Node) {
         modify(&node.environmentValues)
-        AnyBuiltinView(content)._buildNodeTree(node)
+        content.buildNodeTree(node)
     }
 }
 
@@ -50,7 +50,7 @@ public struct EnvironmentReader<Value, Content: View>: View, BuiltinView {
 
     func _buildNodeTree(_ node: Node) {
         let value = node.environmentValues[keyPath: keyPath]
-        AnyBuiltinView(content(value))._buildNodeTree(node)
+        content(value).buildNodeTree(node)
     }
 }
 

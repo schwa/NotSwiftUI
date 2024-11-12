@@ -381,7 +381,8 @@ struct NotSwiftUIStateTests {
 
     // Environment Tests
 
-    @Test func testEnvironment1() {
+    @Test
+    func testEnvironment1() {
         struct Example1: View {
             var body: some View {
                 EnvironmentReader(keyPath: \.exampleValue) { Example2(value: $0) }
@@ -401,7 +402,7 @@ struct NotSwiftUIStateTests {
         #expect(graph.view(at: [0], type: Example2.self).value == "Hello world")
     }
 
-    @Test func testEnvironment2() {
+    func testEnvironment2() {
         struct Example1: View {
             var body: some View {
                 Example2()
